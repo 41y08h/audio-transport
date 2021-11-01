@@ -1,0 +1,51 @@
+.inner {
+  background-color: #202124;
+  height: 100vh;
+  width: 100vw;
+  color: white;
+  padding: 80px 40px;
+
+  .heading {
+    text-align: center;
+  }
+
+  .form {
+    width: fit-content;
+    margin: auto;
+    margin-top: 2rem;
+    padding: 20px;
+    border-radius: 8px;
+    width: 425px;
+    max-width: 100%;
+
+    input {
+      border: none;
+      outline: none;
+    }
+
+    .usernameContainer {
+      display: flex;
+      margin-top: 0.8rem;
+      position: relative;
+      input {
+        width: 100%;
+        border-radius: 4px;
+        padding: 16px;
+        color: white;
+        background-color: #180e15;
+        padding-right: 50px;
+      }
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 50px;
+      }
+    }
+  }
+}

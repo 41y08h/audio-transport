@@ -1,11 +1,12 @@
 import styles from "../styles/Home.module.scss";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 function App() {
   const [username, setUsername] = useState("");
+  const history = useHistory();
   const usernameValidationQuery = useQuery(
     ["validate-username", username],
     () =>
@@ -20,17 +21,31 @@ function App() {
   ) => {
     setUsername(event.target.value.trim());
   };
+  const registerMutation = useMutation(() =>
+    axios.post("/register", { username })
+  );
+
+  const handleSubmit: FormEventHandler = async (event) => {
+    event.preventDefault();
+
+    await registerMutation.mutateAsync();
+  };
+
+  const isUsernameValid = usernameValidationQuery.data?.valid;
 
   return (
     <div>
       <div className={styles.inner}>
-        <h1 className={styles.heading}>Sign Up</h1>
-        <form className={styles.form}>
+        <h1 className={styles.heading}>
+          {"<"} user avatar {">"}
+        </h1>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <label htmlFor="username">Pick a username</label>
           <div className={styles.usernameContainer}>
             <input
               id="username"
               placeholder="Username"
+              minLength={3}
               value={username}
               onChange={handleUsernameChange}
             />
@@ -38,12 +53,22 @@ function App() {
               <div>
                 {usernameValidationQuery.isFetching
                   ? "..."
-                  : usernameValidationQuery.data?.valid
+                  : isUsernameValid
                   ? "✔️"
                   : "❌"}
               </div>
             )}
           </div>
+          <button
+            type="submit"
+            disabled={
+              usernameValidationQuery.isFetching ||
+              !isUsernameValid ||
+              registerMutation.isLoading
+            }
+          >
+            Enter
+          </button>
         </form>
       </div>
     </div>

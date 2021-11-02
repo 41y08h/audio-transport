@@ -1,39 +1,67 @@
-import { FC } from "react";
+import { FC, FormEventHandler, useRef } from "react";
+import { Redirect } from "react-router-dom";
 import Avatar from "../components/Avatar/Avatar";
 import FormInput from "../components/FormInput";
 import { useAuth } from "../contexts/AuthContext";
 import styles from "../styles/Login.module.scss";
-import { ReactComponent as ChevronRightIcon } from "../assets/chevron-right.svg";
 import { Link } from "react-router-dom";
+import { ReactComponent as ChevronRightIcon } from "../assets/chevron-right.svg";
+import { ReactComponent as EditIcon } from "../assets/edit.svg";
 
 const Login: FC = () => {
-  const { registeredAs } = useAuth();
+  const { storedUsername, loginMutation, clearStoredUsername, currentUser } =
+    useAuth();
+  const usernameInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit: FormEventHandler = (event) => {
+    event.preventDefault();
+
+    const username = storedUsername || usernameInputRef.current?.value;
+    const password = passwordInputRef.current?.value;
+
+    if (!username || !password) return;
+
+    loginMutation.mutate({ username, password });
+  };
+
+  if (currentUser) return <Redirect to="/app" />;
 
   return (
     <div className={styles.container}>
       <div className={styles.inner}>
         <Avatar />
-        {registeredAs && (
-          <p className={styles.usernameHeading}>
-            <p>{registeredAs}</p>
-          </p>
+        {storedUsername && (
+          <div className={styles.bigUsername}>
+            <p>{storedUsername}</p>
+            <button onClick={clearStoredUsername}>
+              <EditIcon />
+            </button>
+          </div>
         )}
-        <form className={styles.form}>
-          {!registeredAs && <FormInput placeholder="Username" />}
+        <form className={styles.form} onSubmit={handleSubmit}>
+          {!storedUsername && (
+            <FormInput ref={usernameInputRef} placeholder="Username" />
+          )}
           <div className={styles.passwordContainer}>
-            <FormInput type="password" placeholder="Password" />
-            {registeredAs && (
+            <FormInput
+              ref={passwordInputRef}
+              type="password"
+              placeholder="Password"
+            />
+            {storedUsername && (
               <button type="submit">
                 <ChevronRightIcon />
               </button>
             )}
           </div>
-          {!registeredAs && <button type="submit">Login</button>}
+          {!storedUsername && <button type="submit">Login</button>}
         </form>
 
         <div className={styles.bottomText}>
           <small>
-            Not registered? <Link to={registeredAs ? "/?i" : "/"}>Sign up</Link>
+            Not registered?{" "}
+            <Link to={storedUsername ? "/?i" : "/"}>Sign up</Link>
           </small>
         </div>
       </div>

@@ -18,7 +18,7 @@ import { ReactComponent as ThreeDotsIcon } from "../assets/three-dots.svg";
 
 const Home: FC = () => {
   const { search } = useLocation();
-  const { currentUser, registeredAs } = useAuth();
+  const { currentUser, storedUsername } = useAuth();
   const { registerMutation } = useAuth();
   const [username, setUsername] = useState("");
   const passwordInputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +50,7 @@ const Home: FC = () => {
   const isUsernameValid = usernameValidationQuery.data?.valid;
 
   if (currentUser) return <Redirect to="/app" />;
-  if (registeredAs && search !== "?i") return <Redirect to="/login" />;
+  if (storedUsername && search !== "?i") return <Redirect to="/login" />;
   return (
     <div className={styles.container}>
       <div className={styles.inner}>

@@ -1,10 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./styles/globals.scss";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthProvider } from "./contexts/AuthContext";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import axios, { AxiosError } from "axios";
+
+import "./styles/globals.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./pages/Home";
 import App from "./pages/App";
@@ -23,6 +26,15 @@ const queryClient = new QueryClient({
         return res.data;
       },
     },
+    mutations: {
+      onError(error) {
+        const { response } = error as AxiosError;
+        toast.error(response?.data.message, {
+          position: "bottom-center",
+          theme: "dark",
+        });
+      },
+    },
   },
 });
 
@@ -37,6 +49,7 @@ ReactDOM.render(
             <Route exact path="/app" component={App} />
           </Switch>
         </BrowserRouter>
+        <ToastContainer />
       </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,

@@ -20,7 +20,17 @@ interface AuthContextValue {
     },
     unknown
   >;
-  registeredAs: string | null;
+  loginMutation: UseMutationResult<
+    AxiosResponse<any, any>,
+    unknown,
+    {
+      username: string;
+      password: string;
+    },
+    unknown
+  >;
+  storedUsername: string | null;
+  clearStoredUsername: () => void;
 }
 
 export const AuthContext = createContext<any>(undefined);
@@ -31,8 +41,8 @@ export function useAuth(): AuthContextValue {
 
 export const AuthProvider: FC = ({ children }) => {
   const queryClient = useQueryClient();
-  const [registeredAs, setRegisteredAs] = useLocalStorage<string | null>(
-    "registered-as",
+  const [storedUsername, setStoredUsername] = useLocalStorage<string | null>(
+    "stored-username",
     null
   );
   const currentUserQuery = useQuery(
@@ -47,15 +57,31 @@ export const AuthProvider: FC = ({ children }) => {
       onSuccess(res) {
         const user = res.data;
         queryClient.setQueryData("/current-user", user);
-        setRegisteredAs(user.username);
+        setStoredUsername(user.username);
       },
     }
   );
+  const loginMutation = useMutation(
+    ({ username, password }: { username: string; password: string }) =>
+      axios.post("/login", { username, password }),
+    {
+      onSuccess(res) {
+        const user = res.data;
+        queryClient.setQueryData("/current-user", user);
+        setStoredUsername(user.username);
+      },
+    }
+  );
+  function clearStoredUsername() {
+    setStoredUsername(null);
+  }
 
   const value: AuthContextValue = {
     currentUser: currentUserQuery.data,
     registerMutation,
-    registeredAs,
+    loginMutation,
+    storedUsername,
+    clearStoredUsername,
   };
 
   return (

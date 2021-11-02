@@ -9,11 +9,30 @@
     width: 350px;
     margin: auto;
   }
-  .usernameHeading {
+  .bigUsername {
     text-align: center;
     font-size: 1.3rem;
     margin-top: 2rem;
     letter-spacing: 0.25px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    align-items: center;
+
+    button {
+      background: #0e639c;
+      border: none;
+      color: inherit;
+      padding: 6px;
+      border-radius: 4px;
+      margin-left: 0.6rem;
+      cursor: pointer;
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
   }
   .form {
     margin-top: 2rem;

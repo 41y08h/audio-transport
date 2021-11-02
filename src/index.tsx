@@ -3,10 +3,12 @@ import ReactDOM from "react-dom";
 import "./styles/globals.scss";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AuthProvider } from "./contexts/AuthContext";
+import axios from "axios";
 
 import Home from "./pages/Home";
-import Add from "./pages/Add";
-import axios from "axios";
+import App from "./pages/App";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,12 +29,15 @@ const queryClient = new QueryClient({
 ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/add" component={Add} />
-        </Switch>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/app" component={App} />
+          </Switch>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")

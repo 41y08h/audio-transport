@@ -1,12 +1,27 @@
 import styles from "../styles/Home.module.scss";
-import { useHistory } from "react-router-dom";
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
+import { Link, Redirect, useLocation } from "react-router-dom";
+import {
+  ChangeEventHandler,
+  FC,
+  FormEventHandler,
+  useRef,
+  useState,
+} from "react";
 import axios from "axios";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
+import { useAuth } from "../contexts/AuthContext";
+import FormInput from "../components/FormInput";
+import Avatar from "../components/Avatar/Avatar";
+import { ReactComponent as XIcon } from "../assets/x.svg";
+import { ReactComponent as CheckIcon } from "../assets/check.svg";
+import { ReactComponent as ThreeDotsIcon } from "../assets/three-dots.svg";
 
-function App() {
+const Home: FC = () => {
+  const { search } = useLocation();
+  const { currentUser, registeredAs } = useAuth();
+  const { registerMutation } = useAuth();
   const [username, setUsername] = useState("");
-  const history = useHistory();
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const usernameValidationQuery = useQuery(
     ["validate-username", username],
     () =>
@@ -21,28 +36,29 @@ function App() {
   ) => {
     setUsername(event.target.value.trim());
   };
-  const registerMutation = useMutation(() =>
-    axios.post("/register", { username })
-  );
-
-  const handleSubmit: FormEventHandler = async (event) => {
+  const handleSubmit: FormEventHandler = (event) => {
     event.preventDefault();
+    const passwordInput = passwordInputRef.current;
+    if (!passwordInput) return;
 
-    await registerMutation.mutateAsync();
+    registerMutation.mutate({
+      username,
+      password: passwordInputRef.current.value,
+    });
   };
 
   const isUsernameValid = usernameValidationQuery.data?.valid;
 
+  if (currentUser) return <Redirect to="/app" />;
+  if (registeredAs && search !== "?i") return <Redirect to="/login" />;
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.inner}>
-        <h1 className={styles.heading}>
-          {"<"} user avatar {">"}
-        </h1>
+        <Avatar />
         <form className={styles.form} onSubmit={handleSubmit}>
           <label htmlFor="username">Pick a username</label>
           <div className={styles.usernameContainer}>
-            <input
+            <FormInput
               id="username"
               placeholder="Username"
               minLength={3}
@@ -51,14 +67,23 @@ function App() {
             />
             {username.length > 0 && (
               <div>
-                {usernameValidationQuery.isFetching
-                  ? "..."
-                  : isUsernameValid
-                  ? "✔️"
-                  : "❌"}
+                {usernameValidationQuery.isFetching ? (
+                  <ThreeDotsIcon />
+                ) : isUsernameValid ? (
+                  <CheckIcon />
+                ) : (
+                  <XIcon />
+                )}
               </div>
             )}
           </div>
+          <FormInput
+            ref={passwordInputRef}
+            type="password"
+            placeholder="Password"
+            minLength={6}
+          />
+
           <button
             type="submit"
             disabled={
@@ -67,12 +92,17 @@ function App() {
               registerMutation.isLoading
             }
           >
-            Enter
+            Sign Up
           </button>
         </form>
+        <div className={styles.bottomText}>
+          <small>
+            Already registered? <Link to="/login">Login</Link>
+          </small>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Home;

@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import App from "./pages/App";
 import Login from "./pages/Login";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,11 +29,12 @@ const queryClient = new QueryClient({
     },
     mutations: {
       onError(error) {
-        const { response } = error as AxiosError;
-        toast.error(response?.data.message, {
-          position: "bottom-center",
-          theme: "dark",
-        });
+        const {
+          response: { data },
+        } = error as any;
+        if ("error" in data) {
+          toast.error(data.error.message);
+        }
       },
     },
   },
@@ -47,9 +49,10 @@ ReactDOM.render(
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/app" component={App} />
+            <Route exact path="/settings" component={Settings} />
           </Switch>
         </BrowserRouter>
-        <ToastContainer />
+        <ToastContainer position="bottom-center" theme="dark" />
       </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,

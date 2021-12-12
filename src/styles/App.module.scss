@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "CloisterBlack";
+  src: URL("../assets/CloisterBlack.ttf") format("truetype");
+}
+
+.container {
+  background: radial-gradient(#202124, #000);
+  height: 100vh;
+  width: 100vw;
+  color: white;
+  padding: 80px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .hero {
+    font-family: "CloisterBlack", serif;
+    font-size: 34rem;
+  }
+}

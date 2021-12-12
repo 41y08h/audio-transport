@@ -6,6 +6,7 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
+import Loading from "../components/Loading";
 import useLocalStorage from "../hooks/useLocalStorage";
 import IUser from "../interfaces/IUser";
 
@@ -46,28 +47,28 @@ export const AuthProvider: FC = ({ children }) => {
     null
   );
   const currentUserQuery = useQuery(
-    "/current-user",
-    () => axios.get("/current-user").then((res) => res.data),
+    "/auth/current-user",
+    () => axios.get("/auth/current-user").then((res) => res.data),
     { retry: false, refetchOnWindowFocus: false }
   );
   const registerMutation = useMutation(
     ({ username, password }: { username: string; password: string }) =>
-      axios.post("/register", { username, password }),
+      axios.post("/auth/register", { username, password }),
     {
       onSuccess(res) {
         const user = res.data;
-        queryClient.setQueryData("/current-user", user);
+        queryClient.setQueryData("/auth/current-user", user);
         setStoredUsername(user.username);
       },
     }
   );
   const loginMutation = useMutation(
     ({ username, password }: { username: string; password: string }) =>
-      axios.post("/login", { username, password }),
+      axios.post("/auth/login", { username, password }),
     {
       onSuccess(res) {
         const user = res.data;
-        queryClient.setQueryData("/current-user", user);
+        queryClient.setQueryData("/auth/current-user", user);
         setStoredUsername(user.username);
       },
     }
@@ -86,23 +87,7 @@ export const AuthProvider: FC = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {currentUserQuery.isLoading ? (
-        <div
-          style={{
-            backgroundColor: "#202124",
-            height: "100vh",
-            width: "100vw",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-          }}
-        >
-          Loading...
-        </div>
-      ) : (
-        children
-      )}
+      {currentUserQuery.isLoading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };

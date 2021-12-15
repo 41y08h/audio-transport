@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import axios, { AxiosError } from "axios";
@@ -17,13 +18,13 @@ import Settings from "./pages/Settings";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      async queryFn({ queryKey }) {
-        if (typeof queryKey !== "string")
+      async queryFn({ queryKey: [key] }) {
+        if (typeof key !== "string")
           throw new Error(
-            `Query key can only be a string, got \`${typeof queryKey}\``
+            `Query key can only be a string, got \`${typeof key}\``
           );
 
-        const res = await axios.get(queryKey);
+        const res = await axios.get(key);
         return res.data;
       },
     },
@@ -49,11 +50,16 @@ ReactDOM.render(
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/app" component={App} />
-            <Route exact path="/settings" component={Settings} />
+            <Route
+              exact
+              path={["/settings", "/settings/peers"]}
+              component={Settings}
+            />
           </Switch>
         </BrowserRouter>
         <ToastContainer position="bottom-center" theme="dark" />
       </AuthProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")

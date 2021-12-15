@@ -1,18 +1,32 @@
 import axios from "axios";
 import { FormEventHandler, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Route, Switch } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
+import HandshakesList from "../components/HandshakesList";
+import PeersList from "../components/PeersList";
+import { IHandshake } from "../interfaces/IHandshake";
 import styles from "../styles/Settings.module.scss";
 
 export default function Settings() {
   const [username, setUsername] = useState("");
+  const queryClient = useQueryClient();
   const handshakeMutation = useMutation(
-    "/handshake",
-    () => axios.post("/handshake", { username }),
+    "/handshakes/offers",
+    (username: string) =>
+      axios.post<IHandshake>("/handshakes/offers", { username }),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        const { data: handshake } = res;
+        queryClient.setQueryData<IHandshake[]>("/handshakes/offers", (prev) => [
+          ...prev,
+          handshake,
+        ]);
         toast.success("Request sent");
+
+        // Clear fields
+        setUsername("");
       },
     }
   );
@@ -20,8 +34,9 @@ export default function Settings() {
   const handleSubmit: FormEventHandler = (event) => {
     event.preventDefault();
 
-    handshakeMutation.mutate();
+    handshakeMutation.mutate(username);
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.inner}>
@@ -33,6 +48,8 @@ export default function Settings() {
           />
           <button type="submit">Send</button>
         </form>
+        <Route exact path="/settings" component={HandshakesList} />
+        <Route exact path="/settings/peers" component={PeersList} />
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ const Home: FC = () => {
     ["validate-username", username],
     () =>
       axios
-        .get("/validate-username", { params: { username } })
+        .get("/auth/validate-username", { params: { username } })
         .then((res) => res.data),
     { staleTime: Infinity, enabled: username.length > 0, retry: false }
   );

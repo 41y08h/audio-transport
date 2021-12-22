@@ -1,15 +1,20 @@
 import axios from "axios";
-import { FormEventHandler, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Route, Switch } from "react-router-dom";
+import { FormEventHandler, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { Route } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
 import HandshakesList from "../components/HandshakesList";
 import PeersList from "../components/PeersList";
+import { useAuth } from "../contexts/AuthContext";
+import useEventSubscription from "../hooks/useEventSubscription";
+import { ICallInitData } from "../interfaces/call";
 import { IHandshake } from "../interfaces/IHandshake";
+import "../RTCs/socket";
 import styles from "../styles/Settings.module.scss";
 
 export default function Settings() {
+  const { currentUser } = useAuth();
   const [username, setUsername] = useState("");
   const queryClient = useQueryClient();
   const handshakeMutation = useMutation(
@@ -37,8 +42,13 @@ export default function Settings() {
     handshakeMutation.mutate(username);
   };
 
+  useEventSubscription("peerIsCalling", (data) => {
+    console.log("peerIsCalling", data);
+  });
+
   return (
     <div className={styles.container}>
+      {currentUser.username}
       <div className={styles.inner}>
         <Button>New Handshake</Button>
         <form onSubmit={handleSubmit}>

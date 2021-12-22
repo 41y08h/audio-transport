@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ForwardedRef, forwardRef } from "react";
+import { forwardRef } from "react";
 import styles from "./FormInput.module.scss";
 
 const FormInput = forwardRef<

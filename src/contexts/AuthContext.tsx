@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { createContext, FC, useContext, useEffect, useState } from "react";
+import { createContext, FC, useContext } from "react";
 import {
   useMutation,
   UseMutationResult,

@@ -1,5 +1,12 @@
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 
-const socket = io(process.env.REACT_APP_API_HOSTNAME);
+declare global {
+  interface Window {
+    socket: any;
+  }
+}
+
+const socket = io();
+window.socket = socket;
 
 export default socket;

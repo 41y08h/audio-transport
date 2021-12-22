@@ -2,10 +2,15 @@ import { FC } from "react";
 import { useQuery } from "react-query";
 import { useAuth } from "../../contexts/AuthContext";
 import { IPeer } from "../../interfaces/IPeer";
+import socket from "../../RTCs/socket";
 
 const PeersList: FC = () => {
   const peersQuery = useQuery<IPeer[]>("/peers");
   const { currentUser } = useAuth();
+
+  const callPeer = (username: string) => {
+    socket.emit("callPeer", { username });
+  };
 
   return (
     <div>
@@ -14,11 +19,15 @@ const PeersList: FC = () => {
       ) : (
         <div>
           {peersQuery.data.map((peer) => {
+            const username =
+              peer.userId === currentUser.id
+                ? peer.peer.username
+                : peer.user.username;
+
             return (
-              <div>
-                {peer.userId === currentUser.id
-                  ? peer.peer.username
-                  : peer.user.username}
+              <div key={peer.peer.username + peer.user.username}>
+                <p>{username}</p>
+                <button onClick={() => callPeer(username)}>Call</button>
               </div>
             );
           })}

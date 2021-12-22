@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 import "./styles/globals.scss";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import App from "./pages/App";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
+import AuthRoute from "./components/AuthRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,8 +50,8 @@ ReactDOM.render(
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/app" component={App} />
-            <Route
+            <AuthRoute exact path="/app" component={App} />
+            <AuthRoute
               exact
               path={["/settings", "/settings/peers"]}
               component={Settings}

@@ -2,15 +2,14 @@ import { FC } from "react";
 import { useQuery } from "react-query";
 import { useAuth } from "../../contexts/AuthContext";
 import { IPeer } from "../../interfaces/IPeer";
-import socket from "../../RTCs/socket";
 
-const PeersList: FC = () => {
+interface Props {
+  callPeer: (username: string) => void;
+}
+
+const PeersList: FC<Props> = ({ callPeer }) => {
   const peersQuery = useQuery<IPeer[]>("/peers");
   const { currentUser } = useAuth();
-
-  const callPeer = (username: string) => {
-    socket.emit("callPeer", { username });
-  };
 
   return (
     <div>

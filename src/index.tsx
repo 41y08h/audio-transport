@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { MutationCache, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { AuthProvider } from "./contexts/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
 import "./index.css";
@@ -15,6 +15,7 @@ import App from "./pages/App";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import AuthRoute from "./components/AuthRoute";
+import toast, { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,17 +30,19 @@ const queryClient = new QueryClient({
         return res.data;
       },
     },
-    mutations: {
-      onError(error) {
-        const {
-          response: { data },
-        } = error as any;
-        if ("error" in data) {
-          toast.error(data.error.message);
-        }
-      },
-    },
   },
+  mutationCache: new MutationCache({
+    onError(error, _, __, mutation) {
+      if (mutation.meta?.defaultSideEffects === false) return;
+
+      const {
+        response: { data },
+      } = error as any;
+      if ("error" in data) {
+        toast.error(data.error.message);
+      }
+    },
+  }),
 });
 
 ReactDOM.render(
@@ -58,6 +61,10 @@ ReactDOM.render(
             />
           </Switch>
         </BrowserRouter>
+        <Toaster
+          containerClassName="m-5"
+          toastOptions={{ style: { background: "#333", color: "white" } }}
+        />
         <ToastContainer position="bottom-center" theme="dark" />
       </AuthProvider>
       <ReactQueryDevtools />

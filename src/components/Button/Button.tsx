@@ -1,19 +1,31 @@
 import classNames from "classnames";
 import { forwardRef } from "react";
-import styles from "./Button.module.scss";
+import { ReactComponent as Spinner } from "../../assets/spinner.svg";
 
-const Button = forwardRef<
-  HTMLButtonElement,
-  React.DetailedHTMLProps<
+interface Props
+  extends React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
-  >
->((props, ref) => (
-  <button
-    {...props}
-    ref={ref}
-    className={classNames(styles.button, props.className)}
-  />
-));
+  > {
+  loading?: boolean;
+}
+
+const Button = forwardRef<HTMLButtonElement, Props>(
+  ({ loading = false, children, ...passedProps }, ref) => {
+    const props = { disabled: loading, ...passedProps };
+    return (
+      <button
+        {...props}
+        ref={ref}
+        className={classNames(
+          "bg-blue-600 px-3 py-1.5 rounded-sm flex items-center",
+          props.className
+        )}
+      >
+        {loading && <Spinner />} {children}
+      </button>
+    );
+  }
+);
 
 export default Button;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Route } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,13 +14,15 @@ import "../RTCs/socket";
 
 import Peer, { Instance as SimplePeerInstance } from "simple-peer";
 import socket from "../RTCs/socket";
-import Avatar from "../components/Avatar/Avatar";
+import { AiOutlineUser } from "react-icons/ai";
+import { Transition, Dialog } from "@headlessui/react";
+import HandshakeDialog from "../components/HandshakeDialog";
 
 type CallState = "idle" | "connecting" | "connected";
 
 export default function Settings() {
   const { currentUser } = useAuth();
-  const [username, setUsername] = useState("");
+  const [isHandshakeModalOpen, setIsHandshakeModalOpen] = useState(false);
 
   // These two state are present in caller's app instance
   const [caller, setCaller] = useState<SimplePeerInstance>();
@@ -33,32 +35,6 @@ export default function Settings() {
   // These two elements are present in both caller and callee's app instance
   const [callState, setCallState] = useState<CallState>("idle");
   const remoteAudioRef = useRef<HTMLAudioElement>();
-
-  const queryClient = useQueryClient();
-  const handshakeMutation = useMutation(
-    "/handshakes/offers",
-    (username: string) =>
-      axios.post<IHandshake>("/handshakes/offers", { username }),
-    {
-      onSuccess: (res) => {
-        const { data: handshake } = res;
-        queryClient.setQueryData<IHandshake[]>("/handshakes/offers", (prev) => [
-          ...prev,
-          handshake,
-        ]);
-        toast.success("Request sent");
-
-        // Clear fields
-        setUsername("");
-      },
-    }
-  );
-
-  const handleSubmit: FormEventHandler = (event) => {
-    event.preventDefault();
-
-    handshakeMutation.mutate(username);
-  };
 
   // Caller's app instance
   async function callPeer(username: string) {
@@ -145,21 +121,24 @@ export default function Settings() {
     };
   }, [callee]);
 
+  function toggleHandshakeModal() {
+    setIsHandshakeModalOpen((isHandshakeModalOpen) => !isHandshakeModalOpen);
+  }
+
   return (
-    <div className="p-5">
-      <div>
-        <div>
-          <Avatar style={{ height: "20px", width: "20px" }} />
-          {currentUser.username}
+    <div className="bg-gray-800 h-screen text-white">
+      <div className="max-w-4xl mx-auto h-full px-4 py-8">
+        <div className="flex space-x-2 px-3 py-2 w-fit ml-auto bg-blue-600 rounded-md">
+          <AiOutlineUser className="text-2xl" />
+          <span>@{currentUser.username}</span>
         </div>
-        <Button>New Handshake</Button>
-        <form onSubmit={handleSubmit}>
-          <input
-            placeholder="username"
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <button type="submit">Send</button>
-        </form>
+        <Button className="font-bold" onClick={toggleHandshakeModal}>
+          New Handshake
+        </Button>
+        <HandshakeDialog
+          isOpen={isHandshakeModalOpen}
+          onClose={toggleHandshakeModal}
+        />
 
         {calleeUsername && (
           <div style={{ height: "500px", fontSize: "5rem" }}>

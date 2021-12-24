@@ -2,9 +2,14 @@ import { FC } from "react";
 import styles from "./Avatar.module.scss";
 import avatarImage from "./avatar.svg";
 
-const Avatar: FC = () => {
+type Props = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
+const Avatar: FC<Props> = (props) => {
   return (
-    <div className={styles.avatar}>
+    <div {...props} className={styles.avatar}>
       <img src={avatarImage} alt="avatar" />
     </div>
   );

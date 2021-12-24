@@ -11,9 +11,10 @@ import useEventSubscription from "../hooks/useEventSubscription";
 import { ICallData } from "../interfaces/call";
 import { IHandshake } from "../interfaces/IHandshake";
 import "../RTCs/socket";
-import styles from "../styles/Settings.module.scss";
+
 import Peer, { Instance as SimplePeerInstance } from "simple-peer";
 import socket from "../RTCs/socket";
+import Avatar from "../components/Avatar/Avatar";
 
 type CallState = "idle" | "connecting" | "connected";
 
@@ -145,9 +146,12 @@ export default function Settings() {
   }, [callee]);
 
   return (
-    <div className={styles.container}>
-      {currentUser.username}
-      <div className={styles.inner}>
+    <div className="p-5">
+      <div>
+        <div>
+          <Avatar style={{ height: "20px", width: "20px" }} />
+          {currentUser.username}
+        </div>
         <Button>New Handshake</Button>
         <form onSubmit={handleSubmit}>
           <input

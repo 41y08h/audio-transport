@@ -7,7 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
-import "./styles/globals.scss";
+import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./pages/Home";

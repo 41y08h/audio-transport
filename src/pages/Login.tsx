@@ -1,5 +1,5 @@
 import { FC, FormEventHandler, useRef } from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Avatar from "../components/Avatar/Avatar";
 import FormInput from "../components/FormInput";
 import { useAuth } from "../contexts/AuthContext";
@@ -25,7 +25,7 @@ const Login: FC = () => {
     loginMutation.mutate({ username, password });
   };
 
-  if (currentUser) return <Redirect to="/app" />;
+  if (currentUser) return <Navigate to="/app" />;
 
   return (
     <div className={styles.container}>

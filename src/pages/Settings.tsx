@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FormEventHandler, Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { Route } from "react-router-dom";
+import { Outlet, Route } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
 import HandshakesList from "../components/HandshakesList";
@@ -11,12 +11,17 @@ import useEventSubscription from "../hooks/useEventSubscription";
 import { ICallData } from "../interfaces/call";
 import { IHandshake } from "../interfaces/IHandshake";
 import "../RTCs/socket";
+import { MdOutlineCastConnected } from "react-icons/md";
+import { SiAirplayaudio } from "react-icons/si";
+import { FaHandshake } from "react-icons/fa";
 
 import Peer, { Instance as SimplePeerInstance } from "simple-peer";
 import socket from "../RTCs/socket";
 import { AiOutlineUser } from "react-icons/ai";
 import { Transition, Dialog } from "@headlessui/react";
 import HandshakeDialog from "../components/HandshakeDialog";
+import { Link } from "react-router-dom";
+import SettingsTab from "../components/SettingsTab";
 
 type CallState = "idle" | "connecting" | "connected";
 
@@ -153,12 +158,22 @@ export default function Settings() {
           </div>
         )}
         <audio ref={remoteAudioRef} autoPlay />
-        <Route exact path="/settings" component={HandshakesList} />
-        <Route
-          exact
-          path="/settings/peers"
-          render={() => <PeersList callPeer={callPeer} />}
-        />
+        <div className="flex mt-6 space-x-1">
+          <SettingsTab to="#">
+            <FaHandshake />
+            <span>Handshakes</span>
+          </SettingsTab>
+          <SettingsTab to="/settings/paired">
+            <MdOutlineCastConnected />
+            <span>Paired</span>
+          </SettingsTab>
+          <SettingsTab to="/settings/dialings">
+            <SiAirplayaudio />
+            <span>Dialings</span>
+          </SettingsTab>
+        </div>
+        <div className="h-0.5 bg-gray-400" />
+        <Outlet />
       </div>
     </div>
   );

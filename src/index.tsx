@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { MutationCache, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -14,8 +14,10 @@ import Home from "./pages/Home";
 import App from "./pages/App";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
-import AuthRoute from "./components/AuthRoute";
 import toast, { Toaster } from "react-hot-toast";
+import ProtectedPage from "./components/ProtectedPage";
+import HandshakesList from "./components/HandshakesList";
+import PeersList from "./components/PeersList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,16 +52,18 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <AuthRoute exact path="/app" component={App} />
-            <AuthRoute
-              exact
-              path={["/settings", "/settings/peers"]}
-              component={Settings}
-            />
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/app" element={<ProtectedPage children={<App />} />} />
+            <Route
+              path="/settings"
+              element={<ProtectedPage children={<Settings />} />}
+            >
+              <Route path="/settings" element={<HandshakesList />} />
+              {/* <Route path="peers" element={<PeersList />} /> */}
+            </Route>
+          </Routes>
         </BrowserRouter>
         <Toaster
           containerClassName="m-5"

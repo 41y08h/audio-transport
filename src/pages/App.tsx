@@ -2,14 +2,14 @@ import { FC } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import styles from "../styles/App.module.scss";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 const App: FC = () => {
   const { currentUser } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useHotkeys("CTRL + F2", () => {
-    history.push("/settings");
+    navigate("/settings");
   });
 
   return (

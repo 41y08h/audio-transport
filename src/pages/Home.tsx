@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.scss";
-import { Link, Redirect, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import {
   ChangeEventHandler,
   FC,
@@ -49,8 +49,8 @@ const Home: FC = () => {
 
   const isUsernameValid = usernameValidationQuery.data?.valid;
 
-  if (currentUser) return <Redirect to="/app" />;
-  if (storedUsername && search !== "?i") return <Redirect to="/login" />;
+  if (currentUser) return <Navigate to="/app" />;
+  if (storedUsername && search !== "?i") return <Navigate to="/login" />;
   return (
     <div className={styles.container}>
       <div className={styles.inner}>

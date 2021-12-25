@@ -5,7 +5,9 @@ import { toast } from "react-hot-toast";
 import { IHandshake } from "../interfaces/IHandshake";
 import Button from "./Button";
 import { IPeer } from "../interfaces/IPeer";
-import HandshakesList from "./HandshakesList";
+import SettingsListLoader from "./SettingsListLoader";
+import SettingsListNoItem from "./SettingsListNoItem";
+import SettingsListItem from "./SettingsListItem";
 
 const ReceivedList: FC = () => {
   const queryClient = useQueryClient();
@@ -35,27 +37,30 @@ const ReceivedList: FC = () => {
   );
 
   return (
-    <HandshakesList
-      loading={handshakes.isLoading}
-      list={handshakes.data}
-      renderItem={(handshake) => {
-        const username = handshake.fromUser.username;
-        return (
-          <div
-            key={`${handshake.fromUser.id}${handshake.toUser.id}`}
-            className="bg-gray-100/20 p-3 flex justify-between items-center"
-          >
-            <span>@{handshake.fromUser.username}</span>
-            <Button
-              onClick={() => answerHandshake.mutate({ username })}
-              loading={answerHandshake.isLoading}
-            >
-              Answer
-            </Button>
-          </div>
-        );
-      }}
-    />
+    <div>
+      {handshakes.isLoading ? (
+        <SettingsListLoader />
+      ) : handshakes.data.length > 0 ? (
+        <div className="space-y-2">
+          {handshakes.data.map((handshake) => {
+            const username = handshake.fromUser.username;
+            return (
+              <SettingsListItem key={handshake.toUser.id}>
+                <span>@{handshake.fromUser.username}</span>
+                <Button
+                  onClick={() => answerHandshake.mutate({ username })}
+                  loading={answerHandshake.isLoading}
+                >
+                  Answer
+                </Button>
+              </SettingsListItem>
+            );
+          })}
+        </div>
+      ) : (
+        <SettingsListNoItem />
+      )}
+    </div>
   );
 };
 

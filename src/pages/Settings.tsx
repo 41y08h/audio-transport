@@ -1,13 +1,9 @@
-import axios from "axios";
-import { FormEventHandler, Fragment, useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { Outlet, Route, useMatch } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useEffect, useRef, useState } from "react";
+import { Outlet } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import useEventSubscription from "../hooks/useEventSubscription";
 import { ICallData } from "../interfaces/call";
-import { IHandshake } from "../interfaces/IHandshake";
 import "../RTCs/socket";
 import { MdOutlineCastConnected } from "react-icons/md";
 import { SiAirplayaudio } from "react-icons/si";
@@ -16,9 +12,7 @@ import { FaHandshake } from "react-icons/fa";
 import Peer, { Instance as SimplePeerInstance } from "simple-peer";
 import socket from "../RTCs/socket";
 import { AiOutlineUser } from "react-icons/ai";
-import { Transition, Dialog } from "@headlessui/react";
 import HandshakeDialog from "../components/HandshakeDialog";
-import { Link } from "react-router-dom";
 import SettingsTab from "../components/SettingsTab";
 
 type CallState = "idle" | "connecting" | "connected";

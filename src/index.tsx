@@ -17,8 +17,8 @@ import Settings from "./pages/Settings";
 import toast, { Toaster } from "react-hot-toast";
 import ProtectedPage from "./components/ProtectedPage";
 import ReceivedList from "./components/ReceivedList";
-import PeersList from "./components/PeersList";
 import SentList from "./components/SentList";
+import PairedList from "./components/PairedList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,7 +66,7 @@ ReactDOM.render(
             >
               <Route path="/settings" element={<ReceivedList />} />
               <Route path="sent" element={<SentList />} />
-              <Route path="paired" element={<PeersList />} />
+              <Route path="paired" element={<PairedList />} />
             </Route>
           </Routes>
         </BrowserRouter>

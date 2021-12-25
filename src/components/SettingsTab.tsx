@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { FC } from "react";
-import { Link, LinkProps, useMatch } from "react-router-dom";
+import { Link, LinkProps, useLocation } from "react-router-dom";
 
 type Props = LinkProps &
   React.RefAttributes<HTMLAnchorElement> & {
@@ -8,11 +8,8 @@ type Props = LinkProps &
   };
 
 const SettingsTab: FC<Props> = ({ children, className, ...props }) => {
-  const path = props.to.startsWith("/settings")
-    ? props.to
-    : `/settings/${props.to}`;
-
-  const active = useMatch(path);
+  const location = useLocation();
+  const active = location.pathname.endsWith(props.to);
 
   return (
     <Link

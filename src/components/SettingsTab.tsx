@@ -15,7 +15,7 @@ const SettingsTab: FC<Props> = ({ children, className, ...props }) => {
     <Link
       {...props}
       className={classNames(
-        "w-full text-center py-3 rounded-t-md text-white flex items-center justify-center space-x-2",
+        "w-full text-center py-2 sm:py-3 rounded-t-md text-white flex items-center justify-center space-x-2",
         active ? "bg-gray-200/30" : "bg-gray-200/10",
         className
       )}

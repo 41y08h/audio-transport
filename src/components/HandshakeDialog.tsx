@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-hot-toast";
 import { IHandshake } from "../interfaces/IHandshake";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 const HandshakeDialog: FC<Props> = ({ isOpen, onClose }) => {
   const key = "/handshakes/offers";
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [username, setUsername] = useState("");
   const sendHandshake = useMutation(
@@ -25,11 +27,11 @@ const HandshakeDialog: FC<Props> = ({ isOpen, onClose }) => {
 
     const mutationPromise = sendHandshake.mutateAsync(username);
     const { data: handshake } = await mutationPromise;
-    queryClient.setQueryData<IHandshake[]>("/handshakes/offers", (prev) => [
-      ...prev,
-      handshake,
-    ]);
+    queryClient.setQueryData<IHandshake[]>("/handshakes/sent", (prev) =>
+      prev ? [...prev, handshake] : [handshake]
+    );
     toast.success(`Handshake sent to ${handshake.toUser.username}`);
+    navigate("/settings/sent");
     setUsername("");
     onClose();
   };

@@ -1,5 +1,15 @@
+import classNames from "classnames";
+import { FC } from "react";
+import { IconBaseProps } from "react-icons/lib";
 import { VscLoading } from "react-icons/vsc";
 
-export default function Loading() {
-  return <VscLoading className="animate-spin mx-auto" />;
-}
+const Loading: FC<IconBaseProps> = ({ className, ...props }) => {
+  return (
+    <VscLoading
+      {...props}
+      className={classNames("animate-spin mx-auto", className)}
+    />
+  );
+};
+
+export default Loading;

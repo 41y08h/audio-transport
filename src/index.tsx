@@ -16,7 +16,7 @@ import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import toast, { Toaster } from "react-hot-toast";
 import ProtectedPage from "./components/ProtectedPage";
-import HandshakesList from "./components/HandshakesList";
+import ReceivedList from "./components/ReceivedList";
 import PeersList from "./components/PeersList";
 import SentList from "./components/SentList";
 
@@ -32,6 +32,9 @@ const queryClient = new QueryClient({
         const res = await axios.get(key);
         return res.data;
       },
+      staleTime: 5 * 60 * 1000,
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
     },
   },
   mutationCache: new MutationCache({
@@ -61,7 +64,7 @@ ReactDOM.render(
               path="/settings"
               element={<ProtectedPage children={<Settings />} />}
             >
-              <Route path="/settings" element={<HandshakesList />} />
+              <Route path="/settings" element={<ReceivedList />} />
               <Route path="sent" element={<SentList />} />
               <Route path="paired" element={<PeersList />} />
             </Route>

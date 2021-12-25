@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { forwardRef } from "react";
-import { ReactComponent as Spinner } from "../../assets/spinner.svg";
+import Loading from "../Loading";
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -22,7 +22,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
           props.className
         )}
       >
-        {loading && <Spinner />} {children}
+        {loading && <Loading className="mr-2" />} {children}
       </button>
     );
   }

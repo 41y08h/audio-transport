@@ -4,8 +4,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { Outlet, Route, useMatch } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
-import HandshakesList from "../components/HandshakesList";
-import PeersList from "../components/PeersList";
 import { useAuth } from "../contexts/AuthContext";
 import useEventSubscription from "../hooks/useEventSubscription";
 import { ICallData } from "../interfaces/call";

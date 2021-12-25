@@ -2,13 +2,14 @@ import axios from "axios";
 import { FC } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { useAuth } from "../../contexts/AuthContext";
-import { IHandshake } from "../../interfaces/IHandshake";
+import { useAuth } from "../contexts/AuthContext";
+import { IHandshake } from "../interfaces/IHandshake";
+import Loading from "./Loading";
 
 const HandshakesList: FC = () => {
   const { currentUser } = useAuth();
   const queryClient = useQueryClient();
-  const handshakesQuery = useQuery<IHandshake[]>("/handshakes/offers");
+  const handshakes = useQuery<IHandshake[]>("/handshakes/received");
   const answerHandshakeMutation = useMutation(
     ({ username }: { username: string }) =>
       axios.post("/handshakes/answer", { username }),
@@ -29,10 +30,12 @@ const HandshakesList: FC = () => {
 
   return (
     <div>
-      {handshakesQuery.isLoading ? (
-        <p>Loading Handshakes...</p>
+      {handshakes.isLoading ? (
+        <div className="py-20 text-2xl">
+          <Loading />
+        </div>
       ) : (
-        handshakesQuery.data.map((handshake) => {
+        handshakes.data.map((handshake) => {
           const isHandshakeSent = handshake.fromUser.id === currentUser.id;
           const username = isHandshakeSent
             ? handshake.toUser.username

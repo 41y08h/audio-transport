@@ -3,11 +3,7 @@ import { useQuery } from "react-query";
 import { useAuth } from "../../contexts/AuthContext";
 import { IPeer } from "../../interfaces/IPeer";
 
-interface Props {
-  callPeer: (username: string) => void;
-}
-
-const PeersList: FC<Props> = ({ callPeer }) => {
+const PeersList: FC = () => {
   const peersQuery = useQuery<IPeer[]>("/peers");
   const { currentUser } = useAuth();
 
@@ -26,7 +22,6 @@ const PeersList: FC<Props> = ({ callPeer }) => {
             return (
               <div key={peer.peer.username + peer.user.username}>
                 <p>{username}</p>
-                <button onClick={() => callPeer(username)}>Call</button>
               </div>
             );
           })}

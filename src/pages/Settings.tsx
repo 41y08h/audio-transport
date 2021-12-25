@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FormEventHandler, Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { Outlet, Route } from "react-router-dom";
+import { Outlet, Route, useMatch } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
 import HandshakesList from "../components/HandshakesList";
@@ -25,7 +25,7 @@ import SettingsTab from "../components/SettingsTab";
 
 type CallState = "idle" | "connecting" | "connected";
 
-export default function Settings() {
+export default function Settings(props) {
   const { currentUser } = useAuth();
   const [isHandshakeModalOpen, setIsHandshakeModalOpen] = useState(false);
 
@@ -159,20 +159,24 @@ export default function Settings() {
         )}
         <audio ref={remoteAudioRef} autoPlay />
         <div className="flex mt-6 space-x-1">
-          <SettingsTab to="#">
+          <SettingsTab to="/settings">
             <FaHandshake />
-            <span>Handshakes</span>
+            <span>Received</span>
           </SettingsTab>
-          <SettingsTab to="/settings/paired">
+          <SettingsTab to="sent">
+            <FaHandshake />
+            <span>Sent</span>
+          </SettingsTab>
+          <SettingsTab to="paired">
             <MdOutlineCastConnected />
             <span>Paired</span>
           </SettingsTab>
-          <SettingsTab to="/settings/dialings">
+          <SettingsTab to="dialings">
             <SiAirplayaudio />
             <span>Dialings</span>
           </SettingsTab>
         </div>
-        <div className="h-0.5 bg-gray-400" />
+        <div className="h-0.5 bg-white/80 mb-3" />
         <Outlet />
       </div>
     </div>

@@ -4,9 +4,7 @@ import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import useEventSubscription from "../hooks/useEventSubscription";
 import { ICallData } from "../interfaces/call";
-import "../RTCs/socket";
 import { MdOutlineCastConnected } from "react-icons/md";
-import { SiAirplayaudio } from "react-icons/si";
 import { FaHandshake } from "react-icons/fa";
 
 import Peer, { Instance as SimplePeerInstance } from "simple-peer";
@@ -17,7 +15,7 @@ import SettingsTab from "../components/SettingsTab";
 
 type CallState = "idle" | "connecting" | "connected";
 
-export default function Settings(props) {
+export default function Settings() {
   const { currentUser } = useAuth();
   const [isHandshakeModalOpen, setIsHandshakeModalOpen] = useState(false);
 
@@ -136,20 +134,6 @@ export default function Settings(props) {
           isOpen={isHandshakeModalOpen}
           onClose={toggleHandshakeModal}
         />
-
-        {calleeUsername && (
-          <div style={{ height: "500px", fontSize: "5rem" }}>
-            {{ connecting: "calling", connected: "connected" }[callState]}{" "}
-            {calleeUsername}
-          </div>
-        )}
-        {callerUsername && (
-          <div style={{ height: "500px", fontSize: "5rem" }}>
-            {{ connecting: "calling", connected: "connected" }[callState]}{" "}
-            {callerUsername}
-          </div>
-        )}
-        <audio ref={remoteAudioRef} autoPlay />
         <div className="flex mt-6 space-x-1">
           <SettingsTab to="/settings">
             <FaHandshake />
@@ -162,10 +146,6 @@ export default function Settings(props) {
           <SettingsTab to="paired">
             <MdOutlineCastConnected />
             <span>Paired</span>
-          </SettingsTab>
-          <SettingsTab to="dialings">
-            <SiAirplayaudio />
-            <span>Dialings</span>
           </SettingsTab>
         </div>
         <div className="h-0.5 bg-white/80 mb-3" />
